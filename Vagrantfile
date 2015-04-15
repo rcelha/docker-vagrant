@@ -26,30 +26,34 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
 
     config.vm.provision "shell", inline: "locale-gen pt_BR.UTF-8"
-    config.vm.provision "shell", inline: "apt-get update"
-    config.vm.provision "shell", inline: "apt-get install -y docker.io"
+    config.vm.provision "shell", inline: "wget -qO- https://get.docker.com/ | sh"
     config.vm.provision "shell", inline: "usermod -aG docker vagrant"
 
     # GITHUB for windows key
     config.vm.provision "file",
         source: File.join(ENV["HOME"], ".ssh", "github_rsa"),
-        destination: "~/.ssh/github_rsa"
+        destination: "/home/vagrant/.ssh/github_rsa"
+
     config.vm.provision "file",
         source: File.join(ENV["HOME"], ".ssh", "github_rsa.pub"),
-        destination: "~/.ssh/github_rsa.pub"
+        destination: "/home/vagrant/.ssh/github_rsa.pub"
 
-    config.vm.provision "shell", inline: "chmod 600 ~/.ssh/github_rsa*"
+    config.vm.provision "shell", inline: "chmod 600 /home/vagrant/.ssh/github_rsa*"
+
 
     # SSH Configs
-    config.vm.provision "file", source: "00_ssh.config", destination: "~/.ssh/00_ssh.config"
-    config.vm.provision "file", source: "10_github.config", destination: "~/.ssh/10_github.config"
+    config.vm.provision "file", source: "00_ssh.config", destination: "/home/vagrant/.ssh/00_ssh.config"
+    config.vm.provision "file", source: "10_github.config", destination: "/home/vagrant/.ssh/10_github.config"
 
     # rc
-    config.vm.provision "file", source: "rc/bash_aliases", destination: "~/.bash_aliases"
-    config.vm.provision "file", source: "rc/git-bashrc", destination: "~/.git-bashrc"
-    config.vm.provision "file", source: "rc/git-completion.sh", destination: "~/.git-completion.sh"
-    config.vm.provision "file", source: "rc/gitconfig", destination: "~/.gitconfig"
-    config.vm.provision "file", source: "rc/screenrc", destination: "~/.screenrc"
-    config.vm.provision "file", source: "rc/vimrc", destination: "~/.vimrc"
+    config.vm.provision "file", source: "rc/bash_aliases", destination: "/home/vagrant/.bash_aliases"
+    config.vm.provision "file", source: "rc/git-bashrc", destination: "/home/vagrant/.git-bashrc"
+    config.vm.provision "file", source: "rc/git-completion.sh", destination: "/home/vagrant/.git-completion.sh"
+    config.vm.provision "file", source: "rc/gitconfig", destination: "/home/vagrant/.gitconfig"
+    config.vm.provision "file", source: "rc/screenrc", destination: "/home/vagrant/.screenrc"
+    config.vm.provision "file", source: "rc/vimrc", destination: "/home/vagrant/.vimrc"
+
+    config.vm.provision "shell", inline: "chown -R vagrant: /home/vagrant/.*"
+    
 
 end
